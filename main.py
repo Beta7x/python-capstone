@@ -38,11 +38,37 @@ def new_user():
 
 # endpoint for login
 @app.route('/login', methods=['POST'])
+@cross_origin
 def login():
     email = request.json.get('email')
     password = request.json.get('password')
     result = controller.login(email, password)
     return result
 
+# endpoint for get all visitor
+@app.route('/visitors')
+def get_all_visitor():
+    return controller.get_visitors()
+
+# endpoint for get visitor by key
+@app.route('/visitors/<key>')
+def get_visitor_by_key(key):
+    return controller.visitor_details(key)
+
+# endpoint for insert visitor
+@cross_origin
+@app.route('/visitors/add', methods=['POST'])
+def new_visitor():
+    details = request.get_json()
+    name = details['name']
+    phone = details['phone']
+    address = details['address']
+    message = details['message']
+    
+    result = controller.insert_visitor(
+        name, address, phone, message
+    )
+    return result
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, port=3000)
